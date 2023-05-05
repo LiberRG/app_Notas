@@ -15,6 +15,10 @@ class LuckyController extends AbstractController
     public function index(int $max): Response
     {
 
+        if(($max % 2 ) == 1){
+           return $this->redirectToRoute('app_table', ['filas' => $max, 'cols'=> $max]);
+        }
+
         $number = random_int(0, $max);
 
 

@@ -66,8 +66,10 @@ class NotaController extends AbstractController
             return $this->redirectToRoute('app_nota_list');
         } else {
 
-            return $this->render('nota/crear.html.twig', 
-        ['nota' => $nota]);
+            return $this->render(
+                'nota/crear.html.twig',
+                ['nota' => $nota]
+            );
         }
     }
 

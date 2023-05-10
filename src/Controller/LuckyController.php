@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Service\MessageGenerator;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -40,6 +41,20 @@ class LuckyController extends AbstractController
             'a' => $a,
             'b' => $b,
             'resultado' => $producto
+
+        ]);
+    }
+
+
+    #[Route('/lucky/message', name: 'app_lucky_message')]
+    public function message(MessageGenerator $messageGenerator): Response
+    {
+        $mensaje = $messageGenerator->getHappyMessage();
+
+        return $this->render('lucky/message.html.twig', [
+            'controller_name' => 'LuckyController',
+           
+            'message' => $mensaje
 
         ]);
     }

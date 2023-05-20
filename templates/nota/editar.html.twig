@@ -1,0 +1,15 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Crear nota{% endblock %}
+
+{% block body %}
+
+
+    <h1>Editar nota</h1>
+
+{% include "common/_messages.html.twig" %}
+    
+   {% include "nota/_formulario.html.twig"  with 
+   {'action': path('app_nota_new', {'id': nota.id})} %}
+
+{% endblock %}

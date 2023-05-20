@@ -24,5 +24,14 @@ class NotaService{
        $notas = $this->notaRepository->findAll();
         return $notas;
     }
+    public function findById($id):Nota{
+        $nota = $this->notaRepository->find($id);
+        return $nota;
+    }
+
+    public function update($nota){
+        $this->em->flush($nota);
+        return $nota;
+    }
     
 }

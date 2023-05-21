@@ -32,7 +32,7 @@ class NotaController extends AbstractController
 
 
     //Opción B)
-    #[Route('/nota/new/{id}', name: 'app_nota_new')]
+    #[Route('/nota/new/{id<([1-9]+\d*)>}', name: 'app_nota_new')]
     public function crear(Request $request, NotaService $notaService, int $id = null): Response
     {
         $nota = new Nota();
@@ -40,7 +40,7 @@ class NotaController extends AbstractController
         $update = false;
 
         if ($request->getMethod() === 'POST') {
-           
+
             $valid = true;
             if ($id != null) {
                 $update = true;
@@ -76,11 +76,14 @@ class NotaController extends AbstractController
             }
             return $this->redirectToRoute('app_nota_list');
         } else {
-
-            return $this->render(
-                'nota/crear.html.twig',
-                ['nota' => $nota]
-            );
+            if ($update) {
+                return $this->redirectToRoute('app_nota_update', ["id" => $id]);
+            } else {
+                return $this->render(
+                    'nota/crear.html.twig',
+                    ['nota' => $nota]
+                );
+            }
         }
     }
 
@@ -102,24 +105,28 @@ class NotaController extends AbstractController
         ]);
     }
 
-    #[Route('/nota/update/{id}', name: 'app_nota_update')]
-    public function update(Request $request, NotaService $notaService, int $id): Response
+    #[Route('/nota/update/{id<([1-9]+\d*)>}', name: 'app_nota_update')]
+    public function update(NotaService $notaService, int $id): Response
     {
-        $nota = $notaService->findById($id);        
-        
-            return $this->render('nota/editar.html.twig', [
-                'controller_name' => 'NotaController',
-                'nota' => $nota,
-            ]);
+        $nota = $notaService->findById($id);
+        if ($nota == null) {
+            throw   $this->createNotFoundException();
+        }
+        return $this->render('nota/editar.html.twig', [
+            'controller_name' => 'NotaController',
+            'nota' => $nota,
+        ]);
     }
 
-    #[Route('/nota/detele', name: 'app_nota_delete')]
-    public function delete(NotaService $notaService): Response
+    #[Route('/nota/detele/{id<([1-9]+\d*)>}', name: 'app_nota_delete')]
+    public function delete(Request $request, NotaService $notaService, $id = null): Response
     {
-        $notas = $notaService->list();
-        return $this->render('nota/list.html.twig', [
-            'controller_name' => 'NotaController',
-            'notas' => $notas
-        ]);
+        $nota = $notaService->findById($id);
+        if ($nota == null) {
+            throw   $this->createNotFoundException();
+        } else {
+            $notaService->delete($nota);
+        }
+        return $this->redirectToRoute('app_nota_list');
     }
 }

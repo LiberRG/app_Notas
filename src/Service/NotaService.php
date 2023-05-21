@@ -24,7 +24,7 @@ class NotaService{
        $notas = $this->notaRepository->findAll();
         return $notas;
     }
-    public function findById($id):Nota{
+    public function findById($id){
         $nota = $this->notaRepository->find($id);
         return $nota;
     }
@@ -33,5 +33,14 @@ class NotaService{
         $this->em->flush($nota);
         return $nota;
     }
+
+    public function delete($nota){
+        $this->em->remove($nota);
+        $this->em->flush();
+    }
     
+    // public function delete($nota, $confirmación){
+    //     $nota = $this->notaRepository->remove($nota, $confirmación);
+    //     return $nota;
+    // }
 }

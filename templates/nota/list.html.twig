@@ -17,9 +17,9 @@
 		}
 	</style>
 
-    <h1>Lista de notas</h1>
+	<h1>Lista de notas</h1>
 
-    {% include "common/_messages.html.twig" %}
+	{% include "common/_messages.html.twig" %}
 
 	<div class="example-wrapper">
 
@@ -47,19 +47,20 @@
 								{{nota.descripcion}}
 							</td>
 							<td>
-								<a href="{{path('app_nota_update', {'id': nota.id})}}" class="btn btn-outline-primary">Editar</a>
-								<a href="{{path('app_nota_delete', {'id': nota.id})}}" class="btn btn-outline-danger">Eliminar</a>
+								{# <a href="{{path('app_nota_update', {'id': nota.id})}}" class="btn btn-outline-primary">Editar</a>
+								<a id="eliminarNota" href="{{path('app_nota_delete', {'id': nota.id})}}" class="btn btn-outline-danger">Eliminar</a> #}
+
+								<form method="post" class="d-flex mx-2 align-items-center justify-content-start" id="eliminarNota" action="javascript:eliminar({{nota.id}})">
+									<a href="{{path('app_nota_update', {'id': nota.id})}}" class="btn btn-outline-primary">Editar</a>
+									<input type="submit" class="btn btn-outline-danger" name="btnCerrar" value="Eliminar" id="btnCerrar">
+								</form>
 							</td>
-
 						</tr>
-					{% endfor %}
+					</form>
 				</tbody>
-			</table>
-		{% else %}
-			<div class="alert alert-primary" role="alert">
-				No existen notas en la base de datos
-			</div>
+			</td>
 
-		{% endif %}
-	</div>
-{% endblock %}
+		</tr>
+	{% endfor %}
+</tbody></table>{% else %}<div class="alert alert-primary" role="alert">
+No existen notas en la base de datos</div>{% endif %}</div>{% endblock %}

@@ -1,11 +1,16 @@
 window.onload = function () {
-    // document.querySelector('eliminarNota').onsubmit = function (event) {
-    //     //evitamos que se envíe el formulario
-    //     event.preventDefault();
-    //     showModal('spa_modal', 'Confirmación',
-    //     '¿Está seguro/a de que desea eliminar la nota?',
-    //     null, null, deleteNota, null);
-    // };
+    let eliminar = document.querySelectorAll('[name=eliminarNota]')
+    eliminar.forEach(element => {
+        element.onsubmit = function (event) {
+            console.log(event.target.id)
+            //evitamos que se envíe el formulario
+            event.preventDefault();
+            showModal('spa_modal', 'Confirmación',
+                '¿Está seguro/a de que desea eliminar la nota?',
+                null, null, ()=>{deleteNota(event.target.id)}, null);
+        };
+    });
+    console.log(eliminar);
 }
 
 const base_url = "http://127.0.0.1:8000/";
@@ -76,34 +81,43 @@ function showModal(modal_id, title, msg,
 
 }
 
-function eliminar(id) {
-    console.log(id)
-    showModal('spa_modal', 'Confirmación',
-        '¿Está seguro/a de que desea eliminar la nota?',
-        null, null, () => { deleteNota(id) }, null);
-}
+// function eliminar(id) {
+//     console.log(id)
+//     showModal('spa_modal', 'Confirmación',
+//         '¿Está seguro/a de que desea eliminar la nota?',
+//         null, null, () => { deleteNota(id) }, null);
+// }
 
 
 function deleteNota(id) {
 
     let delete_url = "nota/delete/" + id;
-
     location.href = base_url + delete_url
-
+    
+    // let delete_url = "nota/delete";
+    // const data = {'id': id};
     // const request = new Request(base_url + delete_url, {
-    //     method: "POST"
+    //     method: "POST",
+    //     body: JSON.stringify(data)
     // });
 
     // fetch(request)
     //     .then((response) => {
     //         if (response.status === 200) {
-    //             location.href = base_url + delete_url
+    //             console.log(response.json())
+    //             return response.json();
     //         } else {
     //             console.log("Something went wrong on API server!");
     //             return false;
     //         }
-    //     }
-    //     )
+    //     })
+    //     .then((response) => {
+    //         if ((response.error === true) || (response === false)) {
+    //             console.log('Ha habido un error en el cierre de sesión', true);
+    //         }
+    //         // location.reload();
+    //         console.log("=(")
+    //     })
     //     .catch((error) => {
     //         console.error('Ha ocurrido un error ' + error);
     //     });

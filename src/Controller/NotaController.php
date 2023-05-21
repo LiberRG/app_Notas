@@ -118,7 +118,7 @@ class NotaController extends AbstractController
         ]);
     }
 
-    #[Route('/nota/detele/{id<([1-9]+\d*)>}', name: 'app_nota_delete')]
+    #[Route('/nota/delete/{id<([1-9]+\d*)>}', name: 'app_nota_delete')]
     public function delete(Request $request, NotaService $notaService, $id = null): Response
     {
         $nota = $notaService->findById($id);

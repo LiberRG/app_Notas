@@ -50,7 +50,7 @@
 								{# <a href="{{path('app_nota_update', {'id': nota.id})}}" class="btn btn-outline-primary">Editar</a>
 								<a id="eliminarNota" href="{{path('app_nota_delete', {'id': nota.id})}}" class="btn btn-outline-danger">Eliminar</a> #}
 
-								<form method="post" class="d-flex mx-2 align-items-center justify-content-start" id="eliminarNota" action="javascript:eliminar({{nota.id}})">
+								<form method="post" class="d-flex mx-2 align-items-center justify-content-start" name="eliminarNota" id="{{nota.id}}"> {# action="javascript:eliminar({{nota.id}}") #}
 									<a href="{{path('app_nota_update', {'id': nota.id})}}" class="btn btn-outline-primary">Editar</a>
 									<input type="submit" class="btn btn-outline-danger" name="btnCerrar" value="Eliminar" id="btnCerrar">
 								</form>

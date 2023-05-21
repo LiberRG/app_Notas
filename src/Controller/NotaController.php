@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Nota;
 use App\Service\NotaService;
+use Exception;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
@@ -118,16 +119,36 @@ class NotaController extends AbstractController
         ]);
     }
 
-    #[Route('/nota/delete/{id<([1-9]+\d*)>}', name: 'app_nota_delete')]
-    public function delete(NotaService $notaService, $id = null): Response
+    // #[Route('/nota/delete/{id<([1-9]+\d*)>}', name: 'app_nota_delete')]
+    // public function delete(NotaService $notaService, $id = null): Response
+    // {
+    //     $nota = $notaService->findById($id);
+    //     if ($nota == null) {
+    //         throw   $this->createNotFoundException();
+    //     } else {
+    //         $notaService->delete($nota);
+    //         $this->addFlash("info", "Se han eliminado la nota correctamente");
+    //     }
+    //     return $this->redirectToRoute('app_nota_list');
+    // }
+
+    #[Route('/nota/delete', name: 'app_nota_delete')]
+    public function delete(NotaService $notaService): Response
     {
-        $nota = $notaService->findById($id);
-        if ($nota == null) {
-            throw   $this->createNotFoundException();
-        } else {
-            $notaService->delete($nota);
-            $this->addFlash("info", "Se han eliminado la nota correctamente");
-        }
-        return $this->redirectToRoute('app_nota_list');
+            $data = json_decode(file_get_contents("php://input"), true);
+            $response["error"] = false;
+            if (isset($data["id"])) {
+                $nota = $notaService->findById($data["id"]);
+                if ($nota == null) {
+                    throw   $this->createNotFoundException();
+                } else {
+                    $notaService->delete($nota);
+                    $this->addFlash("info", "Se han eliminado la nota correctamente");
+                }
+            } else {
+                $response["error"] = true;
+                $this->addFlash("error", "Se han poducido un error al eliminar la nota");
+            }
+            return $this->redirectToRoute('app_nota_list');
     }
 }

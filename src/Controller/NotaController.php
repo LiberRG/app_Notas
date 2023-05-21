@@ -119,13 +119,14 @@ class NotaController extends AbstractController
     }
 
     #[Route('/nota/delete/{id<([1-9]+\d*)>}', name: 'app_nota_delete')]
-    public function delete(Request $request, NotaService $notaService, $id = null): Response
+    public function delete(NotaService $notaService, $id = null): Response
     {
         $nota = $notaService->findById($id);
         if ($nota == null) {
             throw   $this->createNotFoundException();
         } else {
             $notaService->delete($nota);
+            $this->addFlash("info", "Se han eliminado la nota correctamente");
         }
         return $this->redirectToRoute('app_nota_list');
     }

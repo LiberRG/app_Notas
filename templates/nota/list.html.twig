@@ -47,14 +47,8 @@
 								{{nota.descripcion}}
 							</td>
 							<td>
-								<a href="{{path('app_nota_update', {'id': nota.id})}}" class="btn btn-outline-primary">Editar</a>
-								{# <a id="eliminarNota" href="{{path('app_nota_delete', {'id': nota.id})}}" class="btn btn-outline-danger">Eliminar</a> #}
+								<a href="{{path('app_nota_update', {'id': nota.id})}}" class="btn btn-outline-primary">Editar</a>								
 								<a class="btn btn-outline-danger" name="eliminarNota" id="{{nota.id}}">Eliminar</a>
-
-								<!-- <form method="post" class="d-flex mx-2 align-items-center justify-content-start" name="eliminarNota" id="{{nota.id}}"> {# action="javascript:eliminar({{nota.id}}") #}
-									<a href="{{path('app_nota_update', {'id': nota.id})}}" class="btn btn-outline-primary">Editar</a>
-									<input type="submit" class="btn btn-outline-danger" name="btnCerrar" value="Eliminar" id="btnCerrar">
-								</form> -->
 							</td>
 						</tr>
 					</form>

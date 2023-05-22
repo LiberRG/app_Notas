@@ -1,16 +1,14 @@
 window.onload = function () {
-    let eliminar = document.querySelectorAll('[name=eliminarNota]')
-    eliminar.forEach(element => {
-        element.onclick = function (event) {
-            console.log(event.target.id)
-            //evitamos que se envíe el formulario
-            event.preventDefault();
-            showModal('spa_modal', 'Confirmación',
-                '¿Está seguro/a de que desea eliminar la nota?',
-                null, null, ()=>{deleteNota2(event.target.id)}, null);
-        };
-    });
-    console.log(eliminar);
+    // let eliminar = document.querySelectorAll('[name=eliminarNota]')
+    // eliminar.forEach(element => {        
+    //     element.onclick = function (event) {
+    //         showModal('spa_modal', 'Confirmación',
+    //             '¿Está seguro/a de que desea eliminar la nota?',
+    //             null, null, () => { deleteNota(event.target.id) }, null);
+    //     };
+    // });
+    // console.log(eliminar);
+    bnteliminar();
 }
 
 const base_url = "http://127.0.0.1:8000/";
@@ -81,32 +79,53 @@ function showModal(modal_id, title, msg,
 
 }
 
-function deleteNota(id) {
-    let delete_url = "nota/delete/" + id;
-    location.href = base_url + delete_url
+function bnteliminar(){
+    let eliminar = document.querySelectorAll('[name=eliminarNota]')
+    eliminar.forEach(element => {        
+        element.onclick = function (event) {
+            showModal('spa_modal', 'Confirmación',
+                '¿Está seguro/a de que desea eliminar la nota?',
+                null, null, () => { deleteNota(event.target.id) }, null);
+        };
+    });
 }
 
-function deleteNota2(id) {
+// function deleteNota2(id) {
+//     let delete_url = "nota/delete/" + id;
+//     location.href = base_url + delete_url
+// }
+
+function deleteNota(id) {
     let delete_url = "nota/delete";
-    const data = {'id': id};
+
+    const data = new FormData();
+    data.append('id', id);
+
+    console.log('url', (base_url + delete_url));
     const request = new Request(base_url + delete_url, {
         method: "POST",
-        body: JSON.stringify(data),
-        headers: {
-            'Accept': 'application/json',
-            'Content-Type': 'application/json',
-        },
+        body: data
     });
 
     fetch(request)
         .then((response) => {
             console.log(response)
             if (response.status === 200) {
-                console.log("eliminado")
-                // location.reload();
+                console.log("eliminado");
+
+                return response.text();
             } else {
                 console.log("Something went wrong on API server!");
                 return false;
+            }
+        })
+        .then((response) => {
+            if (response != false) {
+                let text = response.indexOf("<");
+                let html = response.substring(text, response.length);
+                console.log(html);
+                document.documentElement.innerHTML = html;
+                bnteliminar();
             }
         })
         .catch((error) => {

@@ -112,7 +112,6 @@ function deleteNota(id) {
             console.log(response)
             if (response.status === 200) {
                 console.log("eliminado");
-
                 return response.text();
             } else {
                 console.log("Something went wrong on API server!");

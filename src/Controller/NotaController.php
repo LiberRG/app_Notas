@@ -26,13 +26,14 @@ class NotaController extends AbstractController
 
 
     //     return $this->render('nota/index.html.twig', [
+    //         'page_title' => 'Nota',
     //         'controller_name' => 'NotaController',
     //         'nota' => $nota
     //     ]);
     // }
 
 
-    //Opción B)
+    //Opción B
     #[Route('/nota/new/{id<([1-9]+\d*)>}', name: 'app_nota_new')]
     public function crear(Request $request, NotaService $notaService, int $id = null): Response
     {
@@ -82,7 +83,8 @@ class NotaController extends AbstractController
             } else {
                 return $this->render(
                     'nota/crear.html.twig',
-                    ['nota' => $nota]
+                    ['page_title' => 'Crear nota',
+                    'nota' => $nota]
                 );
             }
         }
@@ -101,6 +103,7 @@ class NotaController extends AbstractController
         }
 
         return $this->render('nota/list.html.twig', [
+            'page_title' => 'Lista de notas',
             'controller_name' => 'NotaController',
             'notas' => $notas
         ]);
@@ -114,6 +117,7 @@ class NotaController extends AbstractController
             throw   $this->createNotFoundException();
         }
         return $this->render('nota/editar.html.twig', [
+            'page_title' => 'Editar nota',
             'controller_name' => 'NotaController',
             'nota' => $nota,
         ]);
@@ -152,6 +156,7 @@ class NotaController extends AbstractController
             }
 
             $HTMLResponse  = $this->render('nota/list.html.twig', [
+                'page_title' => 'Lista de notas',
                 'controller_name' => 'NotaController',
                 'notas' => $notas
             ]);

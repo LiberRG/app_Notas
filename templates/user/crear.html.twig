@@ -1,0 +1,13 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Crear Usuario{% endblock %}
+
+{% block body %}
+
+{% include "common/_messages.html.twig" %}
+   
+   {% include "user/_formulario.html.twig"  with 
+   {'action': path('app_user_new')} %}
+   <p class="mt-3 text-center">Si ya estas registrado: <a href="{{path('app_user')}}">Inicia sesión</a></p>   
+
+{% endblock %}

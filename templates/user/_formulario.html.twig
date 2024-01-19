@@ -12,10 +12,16 @@
   </div>
 
   <div class="mb-3">
+    <label for="pwdconf" class="form-label">Confirma la contraseña</label>
+    <input type="password" class="form-control"
+     id="pwdconf" name="pwdconf" {% if user.id %} hidden {% endif %} >  
+  </div>
+{# 
+  <div class="mb-3">
     <label for="rol" class="form-label">Rol</label>
     <input type="text" class="form-control"
      id="rol" name="rol" value="{{user.rol}}">  
-  </div>
+  </div> #}
   <button type="submit" class="btn btn-primary">Crear Usuario</button>
   {% if user.id %}<a href="{{path('app_user')}}" class="btn btn-danger">Cancelar</a> {% endif %}
 	

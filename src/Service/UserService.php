@@ -38,4 +38,8 @@ class UserService{
         $this->em->remove($user);
         $this->em->flush();
     }
+
+    static function pwdConfirmation($pwd, $pwdconf){
+        return ($pwd == $pwdconf);
+    }
 }

@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Controller;
 
 use App\Entity\User;
@@ -40,7 +39,8 @@ class UserController extends AbstractController
             //Se usa $request->query para obtener variables enviadas por GET
             $email = $request->request->get('email');
             $password = $request->request->get('password');
-            $rol =  $request->request->get('rol');
+            $pwdconf= $request->request->get('pwdconf');
+            // $rol =  $request->request->get('rol');
 
             if (isset($email) && empty($email)) {
                 $this->addFlash('warning', "El campo email es obligatorio");
@@ -48,12 +48,22 @@ class UserController extends AbstractController
             } else {
                 $user->setEmail($email);
             }
-
-            if (isset($rol) && empty($rol)) {
-                $this->addFlash('warning', "El campo rol es obligatorio");
+            
+            if (isset($password) && empty($password)) {
+                $this->addFlash('warning', "El campo contraseña es obligatorio");
                 $valid = false;
             } else {
-                $user->setRol($rol);
+                if ($userService->pwdConfirmation($password, $pwdconf)){$user->setPassword($password);
+                }else{
+                    $this->addFlash('warning', "Las contraseñas no son iguales");
+                    $valid = false;
+                }
+            }
+
+            if (count($userService->list()) == 0 ) {
+                $user->setRol(\ADMIN_ROLE);
+            } else {
+                $user->setRol(\USER_ROLE);
             }
         }
 

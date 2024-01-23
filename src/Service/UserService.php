@@ -37,6 +37,11 @@ class UserService
         $user = $this->userRepository->find($id);
         return $user;
     }
+    public function findRolByName($name)
+    {
+        $rol = $this->rolRepository->findOneBy(['name' => $name]);
+        return $rol;
+    }
 
     public function update($user)
     {

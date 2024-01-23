@@ -14,20 +14,20 @@ class User
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
-    private ?string $email = null;
+    private string $email ;
 
     #[ORM\Column(length: 255)]
-    private ?string $password = null;
+    private string $password ;
 
-    #[ORM\Column]
-    private ?int $rol = null;
+    #[ORM\ManyToOne(targetEntity: Rol::class, inversedBy: 'products')]
+    private Rol $rol;
 
     public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function getEmail(): ?string
+    public function getEmail(): string
     {
         return $this->email;
     }
@@ -39,7 +39,7 @@ class User
         return $this;
     }
 
-    public function getPassword(): ?string
+    public function getPassword(): string
     {
         return $this->password;
     }
@@ -50,16 +50,17 @@ class User
 
         return $this;
     }
-
-    public function getRol(): ?int
+    public function getRol(): Rol
     {
         return $this->rol;
     }
 
-    public function setRol(int $rol): self
+    public function setRol(Rol $rol): self
     {
         $this->rol = $rol;
 
         return $this;
     }
+
+
 }

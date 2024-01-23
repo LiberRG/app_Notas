@@ -1,3 +1,3 @@
 <?php
-const ADMIN_ROLE= 1;
-const USER_ROLE= 2;
+const ADMIN_ROLE= 'admin';
+const USER_ROLE= 'user';

@@ -114,9 +114,9 @@ class UserController extends AbstractController
             }
 
             if (count($userService->list()) == 0) {
-                $user->setRol(ADMIN_ROLE);
+                $user->setRol($userService->findRolByName(ADMIN_ROLE));
             } else {
-                $user->setRol(USER_ROLE);
+                $user->setRol($userService->findRolByName(USER_ROLE));
             }
         }
 
@@ -163,11 +163,13 @@ class UserController extends AbstractController
     public function list(UserService $userService): Response
     {
 
+        //solo puede aceder usuario admin
+
         $users = $userService->list();
         $contador = sizeof($users);
         if ($contador > 0) {
 
-            $this->addFlash("info", "Se han encontrado $contador notas");
+            $this->addFlash("info", "Se han encontrado $contador usuarios");
         }
 
         return $this->render('user/list.html.twig', [
@@ -176,6 +178,47 @@ class UserController extends AbstractController
             'users' => $users
         ]);
     }
+
+    #[Route('/user/delete', name: 'app_user_delete')]
+    public function delete(Request $request, UserService $userService): Response
+    {
+        // $users = $userService->list();
+        if ($request->getMethod() === 'POST') {
+
+            $id = $request->request->get('id');
+            if (isset($id)) {
+                $user = $userService->findById($id);
+                if ($user == null) {
+                    throw   $this->createNotFoundException();
+                } else {
+                    $userService->delete($user);
+                    $this->addFlash("info", "Se han eliminado el usuario correctamente");
+                }
+            } else {
+                $this->addFlash("error", "Se han poducido un error al eliminar usuario");
+            }
+
+            $users = $userService->list();
+            
+            $HTMLResponse  = $this->render('user/list.html.twig', [
+                'page_title' => 'Lista de usuarios',
+                'controller_name' => 'UserController',
+                'users' => $users
+            ]);
+
+            $response = new Response(
+                $HTMLResponse,
+                200,
+                ['Content-Type' => 'text/html']
+            );
+
+            return $response;
+        }
+    }
+
+
+
+
 
     //Se permitirá cerrar sesión en un formulario situado en el header.php que solo se mostrará si el usuario está autenticado. A su izquierda mostrará el email del usuario autenticado
     public function logout()

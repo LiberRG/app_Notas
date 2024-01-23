@@ -42,11 +42,11 @@
 								{{user.email}}
 							</td>
 							<td>
-								{{user.rol}}
+								{{user.rol.name}}
 							</td>
 							<td>
 								{# <a href="{{path('app_nota_update', {'id': user.id})}}" class="btn btn-outline-primary">Editar</a>								 #}
-								<a class="btn btn-outline-danger" name="eliminarNota" id="{{user.id}}">Eliminar</a>
+								<a class="btn btn-outline-danger eliminar" name="usuario" id="{{user.id}}" value="user">Eliminar</a>
 							</td>
 						</tr>
 					</form>

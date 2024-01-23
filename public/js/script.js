@@ -80,12 +80,14 @@ function showModal(modal_id, title, msg,
 }
 
 function bnteliminar(){
-    let eliminar = document.querySelectorAll('[name=eliminarNota]')
+    console.log('hola');
+    let eliminar = document.querySelectorAll('.eliminar')
     eliminar.forEach(element => {        
         element.onclick = function (event) {
+            console.log(event.target);
             showModal('spa_modal', 'Confirmación',
-                '¿Está seguro/a de que desea eliminar la nota?',
-                null, null, () => { deleteNota(event.target.id) }, null);
+                '¿Está seguro/a de que desea eliminar ' + event.target.name + ' ?',
+                null, null, () => { deleteNota(event.target.id, event.target.name) }, null);
         };
     });
 }
@@ -95,8 +97,23 @@ function bnteliminar(){
 //     location.href = base_url + delete_url
 // }
 
-function deleteNota(id) {
-    let delete_url = "nota/delete";
+function deleteNota(id, controller) {
+
+    let delete_url;
+
+    switch (controller) {
+        case 'nota':
+            delete_url ="nota/delete";
+            break;
+    
+            case 'usuario':
+            delete_url ="user/delete";
+            break;
+    
+        default:
+            delete_url ="nota/delete";
+            break;
+    }
 
     const data = new FormData();
     data.append('id', id);

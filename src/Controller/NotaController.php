@@ -139,7 +139,7 @@ class NotaController extends AbstractController
     #[Route('/nota/delete', name: 'app_nota_delete')]
     public function delete(Request $request, NotaService $notaService): Response
     {
-        $notas = $notaService->list();
+        
         if ($request->getMethod() === 'POST') {
 
             $id = $request->request->get('id');
@@ -154,6 +154,7 @@ class NotaController extends AbstractController
             } else {
                 $this->addFlash("error", "Se han poducido un error al eliminar la nota");
             }
+            $notas = $notaService->list();
 
             $HTMLResponse  = $this->render('nota/list.html.twig', [
                 'page_title' => 'Lista de notas',

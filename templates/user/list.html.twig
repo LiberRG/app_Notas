@@ -1,0 +1,59 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Lista de notas
+{% endblock %}
+
+{% block body %}
+	<style>
+		.example-wrapper {
+			margin: 1em auto;
+			max-width: 800px;
+			width: 95%;
+			font: 18px / 1.5 sans-serif;
+		}
+		.example-wrapper code {
+			background: #F5F5F5;
+			padding: 2px 6px;
+		}
+	</style>
+
+	{% include "common/_messages.html.twig" %}
+
+	<div class="example-wrapper">
+
+		{% if users|length >0 %}
+			<table class="table">
+				<thead>
+					<th>
+						Email
+					</th>
+					<th>
+						Rol
+					</th>
+					<th>
+						Acciones
+					</th>
+				</thead>
+				<tbody>
+					{% for user in users %}
+						<tr>
+
+							<td>
+								{{user.email}}
+							</td>
+							<td>
+								{{user.rol}}
+							</td>
+							<td>
+								{# <a href="{{path('app_nota_update', {'id': user.id})}}" class="btn btn-outline-primary">Editar</a>								 #}
+								<a class="btn btn-outline-danger" name="eliminarNota" id="{{user.id}}">Eliminar</a>
+							</td>
+						</tr>
+					</form>
+				</tbody>
+			</td>
+
+		</tr>
+	{% endfor %}
+</tbody></table>{% else %}<div class="alert alert-primary" role="alert">
+No existen notas en la base de datos</div>{% endif %}</div>{% endblock %}

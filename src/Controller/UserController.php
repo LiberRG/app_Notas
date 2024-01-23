@@ -1,8 +1,10 @@
 <?php
+
 namespace App\Controller;
 
 use App\Entity\User;
 use App\Service\UserService;
+use App\Util\SessionManager;
 
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -12,13 +14,63 @@ use Symfony\Component\Routing\Annotation\Route;
 class UserController extends AbstractController
 {
     #[Route('/', name: 'app_user')]
-    public function index(): Response
+    public function index(Request $request, UserService $userService): Response
     {
-        //Falta validación usuario
-        return $this->render('user/index.html.twig', [
-            'page_title' => 'Iniciar sesión',
-            'controller_name' => 'UserController',
-        ]);
+        $valid = false;
+        $accept = true;
+
+        if (SessionManager::isUserLoggedIn()) {
+            return $this->redirectToRoute('app_nota_list');
+        } 
+        
+        if ($request->getMethod() === 'POST') {
+
+            $valid = true;
+
+            $email = $request->request->get('email');
+            $pwd = $request->request->get('password');
+
+            if (isset($email) && empty($email)) {
+                $this->addFlash('warning', "El campo email es obligatorio");
+                $accept = false;
+            }
+
+            if (isset($pwd) && empty($pwd)) {
+                $this->addFlash('warning', "El campo contraseña es obligatorio");
+                $valid = false;
+                $accept = false;
+            } 
+
+            if ($accept) {
+                $email = $email;
+                $pwd = $pwd;
+                $userResult = $userService->login($email, $pwd);
+    
+                if ($userResult == null) {
+                    $this->addFlash('warning', "El usuario o la contraseña no son correctos, por favor intentelo de nuevo");
+                    $valid = false;
+                } else {
+                    SessionManager::iniciarSesion();
+                    $_SESSION["userId"] = $userResult->getId();
+                    $_SESSION["email"] = $userResult->getEmail();
+                    $_SESSION["roleId"] = $userResult->getRol();
+                    $_SESSION["ultimoAcceso"] = time();
+                }
+            }
+        }
+
+        if ($valid) {
+            $this->addFlash('success', "Se ha iniciado sesión correctamente");
+            return $this->redirectToRoute('app_nota_list');
+        } else {
+            return $this->render(
+                'user/index.html.twig',
+                [
+                    'page_title' => 'Iniciar sesion',
+                ]
+            );
+        }
+        
     }
 
     #[Route('/user/new/{id<([1-9]+\d*)>}', name: 'app_user_new')]
@@ -39,7 +91,7 @@ class UserController extends AbstractController
             //Se usa $request->query para obtener variables enviadas por GET
             $email = $request->request->get('email');
             $password = $request->request->get('password');
-            $pwdconf= $request->request->get('pwdconf');
+            $pwdconf = $request->request->get('pwdconf');
             // $rol =  $request->request->get('rol');
 
             if (isset($email) && empty($email)) {
@@ -48,22 +100,23 @@ class UserController extends AbstractController
             } else {
                 $user->setEmail($email);
             }
-            
+
             if (isset($password) && empty($password)) {
                 $this->addFlash('warning', "El campo contraseña es obligatorio");
                 $valid = false;
             } else {
-                if ($userService->pwdConfirmation($password, $pwdconf)){$user->setPassword($password);
-                }else{
+                if ($userService->pwdConfirmation($password, $pwdconf)) {
+                    $user->setPassword(password_hash( $password, PASSWORD_BCRYPT));
+                } else {
                     $this->addFlash('warning', "Las contraseñas no son iguales");
                     $valid = false;
                 }
             }
 
-            if (count($userService->list()) == 0 ) {
-                $user->setRol(\ADMIN_ROLE);
+            if (count($userService->list()) == 0) {
+                $user->setRol(ADMIN_ROLE);
             } else {
-                $user->setRol(\USER_ROLE);
+                $user->setRol(USER_ROLE);
             }
         }
 
@@ -82,8 +135,10 @@ class UserController extends AbstractController
             } else {
                 return $this->render(
                     'user/crear.html.twig',
-                    ['page_title' => 'Crear usuario',
-                    'user' => $user]
+                    [
+                        'page_title' => 'Crear usuario',
+                        'user' => $user
+                    ]
                 );
             }
         }
@@ -103,5 +158,46 @@ class UserController extends AbstractController
             'user' => $user,
         ]);
     }
+
+    #[Route('/user', name: 'app_user_list')]
+    public function list(UserService $userService): Response
+    {
+
+        $users = $userService->list();
+        $contador = sizeof($users);
+        if ($contador > 0) {
+
+            $this->addFlash("info", "Se han encontrado $contador notas");
+        }
+
+        return $this->render('user/list.html.twig', [
+            'page_title' => 'Lista de usuarios',
+            'controller_name' => 'UserController',
+            'users' => $users
+        ]);
+    }
+
+    //Se permitirá cerrar sesión en un formulario situado en el header.php que solo se mostrará si el usuario está autenticado. A su izquierda mostrará el email del usuario autenticado
+    public function logout()
+    {
+        SessionManager::cerrarSesion();
+        return $this->redirectToRoute('app_user');
+    }
+
+
+    // En función del rol seleccionado en login, el usuario deberá ser redirigido a:
+    private function redirectAccordingToRole(UserService $userService) {
+        $pagName = 'app_nota_list';
+        $user_selected_rol = $userService->getRoleById($_SESSION["roleId"]);
+        if ($user_selected_rol->getName() === ADMIN_ROLE) {
+            $pagName = 'app_nota_list';
+        } elseif ($user_selected_rol->getName() === USER_ROLE) {
+            $pagName = 'app_nota_list';
+        }
+        return $pagName;
+    }
+
+
+
 
 }
